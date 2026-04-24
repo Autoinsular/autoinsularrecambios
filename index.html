@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AutoinsularRecambios</title>
+
+<style>
+/* ===== ESTILOS GENERALES ===== */
+body{
+    font-family: Arial, sans-serif;
+    background:#eef2f7;
+    margin:0;
+    padding:0;
+    text-align:center;
+}
+
+h1{
+    color:#0a3d62;
+    margin-top:20px;
+}
+
+/* ===== BUSCADOR ===== */
+#searchInput{
+    width:80%;
+    max-width:400px;
+    padding:12px 15px;
+    margin:20px auto;
+    border-radius:10px;
+    border:2px solid #0a3d62;
+    font-size:16px;
+    background:white;
+    transition:0.25s;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+#searchInput:focus{
+    outline:none;
+    border-color:#145a8d;
+    box-shadow:0 0 8px rgba(20,90,141,0.4);
+}
+
+/* ===== FORMULARIO WHATSAPP ===== */
+.form-box{
+    max-width:520px;
+    margin:20px auto;
+    padding:20px;
+    background:#0a3d62;
+    color:white;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.form-box input,
+.form-box select{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:6px;
+    border:none;
+    font-size:15px;
+}
+
+.btn-whatsapp{
+    width:100%;
+    padding:14px;
+    background:#25D366;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn-whatsapp:hover{
+    background:#1ebe5d;
+}
+
+/* ===== TABLA ESTILIZADA ===== */
+table{
+    margin:30px auto;
+    border-collapse:collapse;
+    width:90%;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+th{
+    background:#0a3d62;
+    color:white;
+    padding:12px;
+    font-size:16px;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+    background:#f1f7ff;
+}
+
+/* ===== BOTÓN FLOTANTE WHATSAPP ===== */
+.floating-ws{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#25D366;
+    color:white;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    text-decoration:none;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ===== VERSIÓN MÓVIL RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    #searchInput{
+        width:90%;
+        max-width:100%;
+        font-size:18px;
+        padding:14px;
+    }
+
+    .form-box{
+        width:90%;
+        padding:15px;
+        border-radius:10px;
+    }
+
+    .form-box input,
+    .form-box select{
+        font-size:16px;
+        padding:14px;
+    }
+
+    .btn-whatsapp{
+        font-size:20px;
+        padding:16px;
+    }
+
+    table{
+        width:95%;
+        border-radius:8px;
+    }
+
+    table thead{
+        display:none;
+    }
+
+    table tr{
+        display:block;
+        background:white;
+        margin-bottom:12px;
+        border-radius:10px;
+        padding:12px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    table td{
+        display:flex;
+        justify-content:space-between;
+        padding:8px 5px;
+        border:none;
+        font-size:15px;
+    }
+
+    table td::before{
+        content: attr(data-label);
+        font-weight:bold;
+        color:#0a3d62;
+    }
+
+    .floating-ws{
+        width:70px;
+        height:70px;
+        font-size:34px;
+        bottom:15px;
+        right:15px;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<h1>AutoinsularRecambios</h1>
+<p>Recambios disponibles en almacén</p>
+
+<!-- 🔍 BUSCADOR ARRIBA DEL TODO -->
+<input type="text" id="searchInput" placeholder="Buscar pieza..." onkeyup="buscarPieza()">
+
+<!-- FORMULARIO DE BÚSQUEDA POR WHATSAPP -->
+<div class="form-box">
+
+  <h2 style="text-align:center;">🔍 ENCUENTRA TU RECAMBIO</h2>
+
+  <input type="text" id="vin" placeholder="Matrícula o VIN">
+  <input type="text" id="pieza" placeholder="¿Qué pieza necesitas?">
+
+  <select id="marca">
+    <option value="">Marca del vehículo</option>
+    <option>Volkswagen</option>
+    <option>Seat</option>
+    <option>Audi</option>
+    <option>BMW</option>
+    <option>Mercedes</option>
+    <option>Toyota</option>
+    <option>Renault</option>
+    <option>Peugeot</option>
+    <option>Citroen</option>
+    <option>Ford</option>
+    <option>Otra</option>
+  </select>
+
+  <select id="urgente">
+    <option value="">Urgencia</option>
+    <option value="Normal">Normal</option>
+    <option value="Urgente">Urgente</option>
+  </select>
+
+  <label style="display:block;margin-top:10px;font-size:14px;">
+    📸 Adjuntar foto (opcional)
+  </label>
+  <input type="file" id="foto" accept="image/*">
+
+  <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+    📲 BUSCAR POR WHATSAPP
+  </button>
+
+  <p style="text-align:center;margin-top:12px;font-size:14px;">
+    ❗ Si no lo encuentras, te lo buscamos
+  </p>
+
+</div>
+
+<!-- TABLA DE RECAMBIOS -->
+<table id="tablaRecambios">
+<thead>
+<tr>
+    <th>Referencia</th>
+    <th>Nombre del recambio</th>
+    <th>Almacén</th>
+    <th>Cantidad</th>
+    <th>Precio (€)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td data-label="Referencia">1444VE</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">12,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1616368880</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9837260480</td>
+    <td data-label="Nombre del recambio">Piloto intermitente lat</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">127,68 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9840123880</td>
+    <td data-label="Nombre del recambio">Motor limpiaparabrisas trasero</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">326,20 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812926780</td>
+    <td data-label="Nombre del recambio">Tubo mando desengrase</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">52,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9101Q8</td>
+    <td data-label="Nombre del recambio">Empuñadura puerta</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">190,06 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">866549</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">28,83 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">237223</td>
+    <td data-label="Nombre del recambio">Rodamiento arbol CV</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">57,26 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">781036</td>
+    <td data-label="Nombre del recambio">Insignia calandra</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">21,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">866549</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">28,83 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">203708</td>
+    <td data-label="Nombre del recambio">Tornillo volante motor</td>
+    <td data-label="Almacén">1C1</td>
+    <td data-label="Cantidad">5</td>
+    <td data-label="Precio (€)">2,86 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">4400R7</td>
+    <td data-label="Nombre del recambio">Cilindro estribo freno</td>
+    <td data-label="Almacén">1C2</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">291,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua motor</td>
+    <td data-label="Almacén">1C2</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1606374680</td>
+    <td data-label="Nombre del recambio">Rodamiento buje rueda</td>
+    <td data-label="Almacén">1C2</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">212,91 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9675081780</td>
+    <td data-label="Nombre del recambio">Electroválvula bomba aceite</td>
+    <td data-label="Almacén">1C2</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">398,80 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">503615</td>
+    <td data-label="Nombre del recambio">Tuerca hexagonal</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">12</td>
+    <td data-label="Precio (€)">7,62 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9817224280</td>
+    <td data-label="Nombre del recambio">Tuerca con base</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">3,01 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9676149980</td>
+    <td data-label="Nombre del recambio">Tornillo rótula mangueta dr</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">4,97 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">521114</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9807710580</td>
+    <td data-label="Nombre del recambio">Tuerca con base</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">1,11 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">362230</td>
+    <td data-label="Nombre del recambio">Tuerca autoblocante</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">1,62 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9813452780</td>
+    <td data-label="Nombre del recambio">Junta brida tubo engrase</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">24,79 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9813454480</td>
+    <td data-label="Nombre del recambio">Junta tórica tubo engrase</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">12,45 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9801727580</td>
+    <td data-label="Nombre del recambio">Junta colector agua motor</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">21,88 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">4010F7</td>
+    <td data-label="Nombre del recambio">Tuerca hexagonal</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">6,44 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">362254</td>
+    <td data-label="Nombre del recambio">Tornillo fijación</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">6,37 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1610668880</td>
+    <td data-label="Nombre del recambio">Tuerca c/ arandela</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">2,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98312576ZD</td>
+    <td data-label="Nombre del recambio">Bloque mando</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">837,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">517634</td>
+    <td data-label="Nombre del recambio">Mangueta rueda trasera</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">173,87 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9801596880</td>
+    <td data-label="Nombre del recambio">Junta bomba agua</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">17,35 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">335086</td>
+    <td data-label="Nombre del recambio">Conjunto rodamiento buje</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">268,87 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">19</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">329724</td>
+    <td data-label="Nombre del recambio">Tuerca fij transmisión</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">13,55 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">13</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179680</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9824862380</td>
+    <td data-label="Nombre del recambio">Junta bomba gasolina</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">48,50 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">4010F5</td>
+    <td data-label="Nombre del recambio">Tuerca dirección</td>
+    <td data-label="Almacén">1C3</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">5,32 + IGIC</td>
+</tr>
+<tr>
+    <td data-label="Referencia">9813562080</td>
+    <td data-label="Nombre del recambio">Reposabrazos</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">275,13 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8975V4</td>
+    <td data-label="Nombre del recambio">Cinturon pirot</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">585,12 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425424</td>
+    <td data-label="Nombre del recambio">Jgo plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">229,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425334</td>
+    <td data-label="Nombre del recambio">Jgo 4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">178,54 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623063980</td>
+    <td data-label="Nombre del recambio">E:4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">72,17 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H RCN</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9800751780</td>
+    <td data-label="Nombre del recambio">Tornillo fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">4,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1673600080</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">460,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9827166480</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">293,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9803094380</td>
+    <td data-label="Nombre del recambio">Bomba de agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1648297780</td>
+    <td data-label="Nombre del recambio">Conj sincromizador CCM</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">819,53 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820098380</td>
+    <td data-label="Nombre del recambio">Buje rodamiento rueda</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">300,64 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179580</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">16</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">312165</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">39,27 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1675689680</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">45,42 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98273683DX</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">44,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9852039780</td>
+    <td data-label="Nombre del recambio">Ultracapacidad</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">262,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444VR</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1611158080</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">31,51 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444XG</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">49,84 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444TG</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444SW</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9835304280</td>
+    <td data-label="Nombre del recambio">Reten</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">72,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9823743580</td>
+    <td data-label="Nombre del recambio">Abrazadera</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">12,08 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820669180</td>
+    <td data-label="Nombre del recambio">Bomba Lavalunas</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">62,82 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">374046</td>
+    <td data-label="Nombre del recambio">Tapon de Buje</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">8,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9830916980</td>
+    <td data-label="Nombre del recambio">Obturador</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">3,63 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8715C5</td>
+    <td data-label="Nombre del recambio">Bisagra</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">87,29 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9673216480</td>
+    <td data-label="Nombre del recambio">Placa Soporte</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">71,72 + IGIC</td>
+</tr>
+<tr>
+    <td data-label="Referencia">9813562080</td>
+    <td data-label="Nombre del recambio">Reposabrazos</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">275,13 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8975V4</td>
+    <td data-label="Nombre del recambio">Cinturon pirot</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">585,12 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425424</td>
+    <td data-label="Nombre del recambio">Jgo plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">229,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425334</td>
+    <td data-label="Nombre del recambio">Jgo 4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">178,54 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623063980</td>
+    <td data-label="Nombre del recambio">E:4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">72,17 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H RCN</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9800751780</td>
+    <td data-label="Nombre del recambio">Tornillo fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">4,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1673600080</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">460,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9827166480</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">293,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9803094380</td>
+    <td data-label="Nombre del recambio">Bomba de agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1648297780</td>
+    <td data-label="Nombre del recambio">Conj sincromizador CCM</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">819,53 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820098380</td>
+    <td data-label="Nombre del recambio">Buje rodamiento rueda</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">300,64 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179580</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">16</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">312165</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">39,27 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1675689680</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">45,42 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98273683DX</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">44,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9852039780</td>
+    <td data-label="Nombre del recambio">Ultracapacidad</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">262,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444VR</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1611158080</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">31,51 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444XG</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">49,84 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444TG</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444SW</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9835304280</td>
+    <td data-label="Nombre del recambio">Reten</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">72,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9823743580</td>
+    <td data-label="Nombre del recambio">Abrazadera</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">12,08 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820669180</td>
+    <td data-label="Nombre del recambio">Bomba Lavalunas</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">62,82 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">374046</td>
+    <td data-label="Nombre del recambio">Tapon de Buje</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">8,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9830916980</td>
+    <td data-label="Nombre del recambio">Obturador</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">3,63 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8715C5</td>
+    <td data-label="Nombre del recambio">Bisagra</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">87,29 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9673216480</td>
+    <td data-label="Nombre del recambio">Placa Soporte</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">71,72 + IGIC</td>
+</tr>
+<tr>
+    <td data-label="Referencia">9813562080</td>
+    <td data-label="Nombre del recambio">Reposabrazos</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">275,13 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8975V4</td>
+    <td data-label="Nombre del recambio">Cinturon pirot</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">585,12 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425424</td>
+    <td data-label="Nombre del recambio">Jgo plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">229,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425334</td>
+    <td data-label="Nombre del recambio">Jgo 4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">178,54 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623063980</td>
+    <td data-label="Nombre del recambio">E:4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">72,17 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H RCN</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9800751780</td>
+    <td data-label="Nombre del recambio">Tornillo fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">4,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1673600080</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">460,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9827166480</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">293,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9803094380</td>
+    <td data-label="Nombre del recambio">Bomba de agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1648297780</td>
+    <td data-label="Nombre del recambio">Conj sincromizador CCM</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">819,53 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820098380</td>
+    <td data-label="Nombre del recambio">Buje rodamiento rueda</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">300,64 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179580</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">16</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">312165</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">39,27 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1675689680</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">45,42 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98273683DX</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">44,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9852039780</td>
+    <td data-label="Nombre del recambio">Ultracapacidad</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">262,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444VR</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1611158080</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">31,51 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444XG</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">49,84 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444TG</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444SW</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9835304280</td>
+    <td data-label="Nombre del recambio">Reten</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">72,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9823743580</td>
+    <td data-label="Nombre del recambio">Abrazadera</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">12,08 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820669180</td>
+    <td data-label="Nombre del recambio">Bomba Lavalunas</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">62,82 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">374046</td>
+    <td data-label="Nombre del recambio">Tapon de Buje</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">8,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9830916980</td>
+    <td data-label="Nombre del recambio">Obturador</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">3,63 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8715C5</td>
+    <td data-label="Nombre del recambio">Bisagra</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">87,29 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9673216480</td>
+    <td data-label="Nombre del recambio">Placa Soporte</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">71,72 + IGIC</td>
+</tr>
+<tr>
+    <td data-label="Referencia">9813562080</td>
+    <td data-label="Nombre del recambio">Reposabrazos</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">275,13 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8975V4</td>
+    <td data-label="Nombre del recambio">Cinturon pirot</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">585,12 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425424</td>
+    <td data-label="Nombre del recambio">Jgo plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">229,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425334</td>
+    <td data-label="Nombre del recambio">Jgo 4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">178,54 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623063980</td>
+    <td data-label="Nombre del recambio">E:4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">72,17 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H RCN</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9800751780</td>
+    <td data-label="Nombre del recambio">Tornillo fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">4,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1673600080</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">460,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9827166480</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">293,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9803094380</td>
+    <td data-label="Nombre del recambio">Bomba de agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1648297780</td>
+    <td data-label="Nombre del recambio">Conj sincromizador CCM</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">819,53 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820098380</td>
+    <td data-label="Nombre del recambio">Buje rodamiento rueda</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">300,64 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179580</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">16</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">312165</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">39,27 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1675689680</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">45,42 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98273683DX</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">44,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9852039780</td>
+    <td data-label="Nombre del recambio">Ultracapacidad</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">262,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444VR</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1611158080</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">31,51 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444XG</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">49,84 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444TG</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444SW</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9835304280</td>
+    <td data-label="Nombre del recambio">Reten</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">72,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9823743580</td>
+    <td data-label="Nombre del recambio">Abrazadera</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">12,08 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820669180</td>
+    <td data-label="Nombre del recambio">Bomba Lavalunas</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">62,82 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">374046</td>
+    <td data-label="Nombre del recambio">Tapon de Buje</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">8,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9830916980</td>
+    <td data-label="Nombre del recambio">Obturador</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">3,63 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8715C5</td>
+    <td data-label="Nombre del recambio">Bisagra</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">87,29 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9673216480</td>
+    <td data-label="Nombre del recambio">Placa Soporte</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">71,72 + IGIC</td>
+</tr>
+<tr>
+    <td data-label="Referencia">9813562080</td>
+    <td data-label="Nombre del recambio">Reposabrazos</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">275,13 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8975V4</td>
+    <td data-label="Nombre del recambio">Cinturon pirot</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">585,12 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425424</td>
+    <td data-label="Nombre del recambio">Jgo plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">229,39 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">425334</td>
+    <td data-label="Nombre del recambio">Jgo 4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">178,54 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623063980</td>
+    <td data-label="Nombre del recambio">E:4 plaquetas</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">72,17 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C4</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9674550680</td>
+    <td data-label="Nombre del recambio">Tornillo H RCN</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">3,43 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9800751780</td>
+    <td data-label="Nombre del recambio">Tornillo fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">4,05 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1692669080</td>
+    <td data-label="Nombre del recambio">Tuerca fijación amortiguador</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">2,23 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1673600080</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">460,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9827166480</td>
+    <td data-label="Nombre del recambio">Bomba de vacío mecánica</td>
+    <td data-label="Almacén">1C5</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">293,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9812131480</td>
+    <td data-label="Nombre del recambio">Caja salida agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">182,60 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9803094380</td>
+    <td data-label="Nombre del recambio">Bomba de agua</td>
+    <td data-label="Almacén">1C6</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">182,36 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1648297780</td>
+    <td data-label="Nombre del recambio">Conj sincromizador CCM</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">819,53 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820098380</td>
+    <td data-label="Nombre del recambio">Buje rodamiento rueda</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">300,64 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1623179580</td>
+    <td data-label="Nombre del recambio">Retén CV</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">16</td>
+    <td data-label="Precio (€)">37,24 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">312165</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">3</td>
+    <td data-label="Precio (€)">39,27 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1675689680</td>
+    <td data-label="Nombre del recambio">Retén</td>
+    <td data-label="Almacén">1C7</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">45,42 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9678749180</td>
+    <td data-label="Nombre del recambio">Copela</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">8</td>
+    <td data-label="Precio (€)">7,67 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">98273683DX</td>
+    <td data-label="Nombre del recambio">Monograma</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">44,02 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9852039780</td>
+    <td data-label="Nombre del recambio">Ultracapacidad</td>
+    <td data-label="Almacén">1C8</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">262,65 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444VR</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1611158080</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">31,51 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444XG</td>
+    <td data-label="Nombre del recambio">Filtro de aire</td>
+    <td data-label="Almacén">1C9</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">49,84 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444TG</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">2</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">1444SW</td>
+    <td data-label="Nombre del recambio">Filtro Aire</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">60,76 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9835304280</td>
+    <td data-label="Nombre del recambio">Reten</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">11</td>
+    <td data-label="Precio (€)">72,07 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9823743580</td>
+    <td data-label="Nombre del recambio">Abrazadera</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">12,08 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9820669180</td>
+    <td data-label="Nombre del recambio">Bomba Lavalunas</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">62,82 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">374046</td>
+    <td data-label="Nombre del recambio">Tapon de Buje</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">6</td>
+    <td data-label="Precio (€)">8,61 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9830916980</td>
+    <td data-label="Nombre del recambio">Obturador</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">3,63 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">8715C5</td>
+    <td data-label="Nombre del recambio">Bisagra</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">4</td>
+    <td data-label="Precio (€)">87,29 + IGIC</td>
+</tr>
+
+<tr>
+    <td data-label="Referencia">9673216480</td>
+    <td data-label="Nombre del recambio">Placa Soporte</td>
+    <td data-label="Almacén">1C10</td>
+    <td data-label="Cantidad">1</td>
+    <td data-label="Precio (€)">71,72 + IGIC</td>
+</tr>
+</table>
+
+<!-- WhatsApp -->
+<a class="whatsapp" href="https://wa.me/34922220099?text=Hola,%20quiero%20información%20sobre%20sus%20recambios" target="_blank">
+Contactar por WhatsApp
+</a>
+
+<script>
+
+function buscarPieza(){
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let table = document.getElementById("tablaRecambios");
+    let tr = table.getElementsByTagName("tr");
+
+    for(let i=1; i<tr.length; i++){
+        let td = tr[i].getElementsByTagName("td");
+        let mostrar = false;
+
+        for(let j=0; j<td.length; j++){
+            if(td[j].innerText.toLowerCase().includes(input)){
+                mostrar = true;
+                break;
+            }
+        }
+
+        tr[i].style.display = mostrar ? "" : "none";
+    }
+}
+
+function agregarPieza(){
+
+    let ref = document.getElementById("ref").value;
+    let nombre = document.getElementById("nombre").value;
+    let almacen = document.getElementById("almacen").value;
+    let cantidad = document.getElementById("cantidad").value;
+    let precio = document.getElementById("precio").value;
+
+    if(!ref || !nombre || !almacen || !cantidad || !precio){
+        alert("Completa todos los campos");
+        return;
+    }
+
+    let table = document.getElementById("tablaRecambios");
+    let row = table.insertRow();
+
+    row.insertCell(0).innerText = ref;
+    row.insertCell(1).innerText = nombre;
+    row.insertCell(2).innerText = almacen;
+    row.insertCell(3).innerText = cantidad;
+    row.insertCell(4).innerText = precio;
+
+    document.getElementById("ref").value="";
+    document.getElementById("nombre").value="";
+    document.getElementById("almacen").value="";
+    document.getElementById("cantidad").value="";
+    document.getElementById("precio").value="";
+}
+
+</script>
+...
+<!-- aquí termina tu tabla, formulario, etc -->
+
+<script>
+function enviarWhatsApp() {
+    const vin = document.getElementById("vin").value;
+    const pieza = document.getElementById("pieza").value;
+    const marca = document.getElementById("marca").value;
+    const urgente = document.getElementById("urgente").value;
+
+    let mensaje = `Hola, busco esta pieza:\n\n` +
+                  `🔹 Matrícula/VIN: ${vin}\n` +
+                  `🔹 Pieza: ${pieza}\n` +
+                  `🔹 Marca: ${marca}\n` +
+                  `🔹 Urgencia: ${urgente}`;
+
+    const url = `https://wa.me/34922220099?text=${encodeURIComponent(mensaje)}`;
+
+    window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
+
+</body>
+</html>
